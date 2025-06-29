@@ -195,16 +195,18 @@ Scheduler: Linear warmup
 ## 🖼️ Web Interface Screenshots
 
 ### Main Classification Interface
-![Classification Interface](screenshots/classification-interface.png)
+![Image](https://github.com/user-attachments/assets/50271d0a-3986-4963-813f-50f12d0367ec)
 
 ### Performance Dashboard
-![Dashboard](screenshots/dashboard.png)
+
+![Image](https://github.com/user-attachments/assets/2016e107-0020-4fab-8d87-d07aaefa254c)
 
 ### Training Curves Analysis
-![Training Curves](screenshots/training-curves.png)
+![Image](https://github.com/user-attachments/assets/9f926b27-b68a-45d0-bb79-def3d4cc53e3)
 
 ### Text Analysis
-![Text Analysis](screenshots/text-analysis.png)
+
+![Image](https://github.com/user-attachments/assets/bdbc37b1-2242-4065-9b39-7379d592c365)
 
 ## 🔬 Research Methodology
 
