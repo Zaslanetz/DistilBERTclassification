@@ -1,2 +1,4 @@
 # Model files (too large for GitHub)
+models/*.pt
 models/best_model.pt
+*.pt
