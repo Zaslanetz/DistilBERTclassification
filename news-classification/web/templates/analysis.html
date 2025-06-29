@@ -1,0 +1,111 @@
+<!-- web/templates/analysis.html -->
+{% extends "base.html" %}
+
+{% block title %}Text Analysis{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="display-5 fw-bold text-primary mb-4">
+            <i class="fas fa-chart-line me-3"></i>Text Analysis Dashboard
+        </h1>
+        <p class="lead">Comprehensive analysis of the BBC News dataset used for training.</p>
+    </div>
+</div>
+
+{% if not model_exists %}
+<div class="alert alert-warning">
+    <h4><i class="fas fa-exclamation-triangle"></i> Analysis Not Available</h4>
+    <p>Please train the model first by running <code>python main.py</code> to generate analysis data.</p>
+</div>
+{% else %}
+<div class="row g-4">
+    <!-- Text Length Analysis -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-ruler me-2"></i>Text Length Analysis</h5>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='text_length_analysis.png') }}" 
+                     class="img-fluid" alt="Text Length Analysis">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Words -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-list-ol me-2"></i>Top Words by Category</h5>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='top_words.png') }}" 
+                     class="img-fluid" alt="Top Words">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Word Clouds -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-cloud me-2"></i>Word Clouds by Category</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {% for category in categories %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h6 class="mb-0 text-capitalize">{{ category }}</h6>
+                            </div>
+                            <div class="card-body p-2">
+                                <img src="{{ url_for('static', filename='wordclouds/' + category + '_wordcloud.png') }}" 
+                                     class="img-fluid" alt="{{ category }} Word Cloud">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Training Curves Analysis -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Training Curves Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <img src="{{ url_for('static', filename='training_curves.png') }}" 
+                             class="img-fluid" alt="Training Curves">
+                    </div>
+                    <div class="col-lg-4">
+                        <h6 class="fw-bold">Analysis:</h6>
+                        <p class="small">
+                            The training curves show that both loss values on training and validation sets 
+                            gradually decreased throughout the epochs, while accuracy metrics increased. 
+                            There is no significant divergence between training and validation curves, 
+                            indicating the absence of serious overfitting.
+                        </p>
+                        <p class="small">
+                            The stabilization of validation metrics in the final epochs confirms the 
+                            appropriateness of the chosen number of training epochs and the effectiveness 
+                            of applied regularization techniques such as Dropout and early stopping.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

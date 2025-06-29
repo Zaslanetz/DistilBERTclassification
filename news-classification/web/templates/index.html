@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Text Classification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; }
+        .container { max-width: 800px; }
+        .result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">News Text Classification</h1>
+        
+        {% if model_exists %}
+        <form id="predictionForm">
+            <div class="mb-3">
+                <label for="newsText" class="form-label">Enter news text:</label>
+                <textarea class="form-control" id="newsText" rows="10" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="classifyBtn">
+                <i class="fas fa-search me-1"></i>Classify Text
+            </button>
+        </form>
+        
+        <div class="result" id="result" style="display: none;">
+            <h3>Classification Result:</h3>
+            <div class="alert alert-success" id="prediction"></div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <h4>Model Not Trained Yet</h4>
+            <p>The classification model hasn't been trained yet. Please run <code>python main.py</code> in the terminal first to train the model.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if model_exists %}
+    <script>
+        // Sample news texts for demonstration
+        const sampleTexts = {
+            business: "The Federal Reserve announced a new interest rate policy today, affecting mortgage rates and business loans across the country. Financial markets responded positively to the news, with major indices showing significant gains.",
+            entertainment: "The highly anticipated movie sequel broke box office records this weekend, earning over $200 million globally. Critics praised the film's visual effects and storyline, calling it a worthy successor to the original.",
+            politics: "The Senate voted on the new healthcare bill yesterday, with senators debating key provisions late into the night. The legislation aims to expand coverage while reducing costs for American families.",
+            sport: "In an thrilling match yesterday, the home team secured victory with a spectacular goal in the final minutes. The stadium erupted as fans celebrated what many are calling the goal of the season.",
+            tech: "A major technology company unveiled its latest smartphone featuring advanced AI capabilities and improved battery life. The device includes cutting-edge camera technology and faster processing speeds."
+        };
+
+        function loadSample() {
+            const categories = Object.keys(sampleTexts);
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            document.getElementById('newsText').value = sampleTexts[randomCategory];
+        }
+
+        function clearText() {
+            document.getElementById('newsText').value = '';
+            document.getElementById('result').style.display = 'none';
+        }
+
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const text = document.getElementById('newsText').value;
+            const classifyBtn = document.getElementById('classifyBtn');
+            
+            if (text.length < 10) {
+                alert('Please enter more text for better classification accuracy.');
+                return;
+            }
+            
+            // Show loading state
+            classifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Classifying...';
+            classifyBtn.disabled = true;
+            
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'text': text
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('prediction').innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    const categoryIcons = {
+                        'business': 'fas fa-chart-line',
+                        'entertainment': 'fas fa-film',
+                        'politics': 'fas fa-landmark',
+                        'sport': 'fas fa-futbol',
+                        'tech': 'fas fa-microchip'
+                    };
+                    
+                    const categoryColors = {
+                        'business': 'primary',
+                        'entertainment': 'success', 
+                        'politics': 'warning',
+                        'sport': 'danger',
+                        'tech': 'info'
+                    };
+                    
+                    const icon = categoryIcons[data.prediction.toLowerCase()] || 'fas fa-tag';
+                    const confidence = data.confidence ? (data.confidence * 100).toFixed(1) : 'N/A';
+                    const categoryColor = categoryColors[data.prediction.toLowerCase()] || 'secondary';
+                    
+                    document.getElementById('prediction').innerHTML = 
+                        `<div class="alert alert-success fs-5">
+                            <i class="${icon} me-2"></i>Category: <strong>${data.prediction.toUpperCase()}</strong>
+                            <span class="badge bg-${categoryColor} ms-2" style="vertical-align: top; margin-top: 2px;">${confidence}%</span>
+                        </div>`;
+                }
+                document.getElementById('result').style.display = 'block';
+                
+                // Reset button
+                classifyBtn.innerHTML = '<i class="fas fa-search me-1"></i>Classify Text';
+                classifyBtn.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('prediction').innerHTML = 
+                    `<div class="alert alert-danger">Error occurred during classification.</div>`;
+                document.getElementById('result').style.display = 'block';
+                
+                // Reset button
+                classifyBtn.innerHTML = '<i class="fas fa-search me-1"></i>Classify Text';
+                classifyBtn.disabled = false;
+            });
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
