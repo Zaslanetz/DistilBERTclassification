@@ -49,7 +49,7 @@ This project implements a state-of-the-art news text classification system using
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/news-text-classification.git
+git clone https://github.com/ArthurStoliarchuk/news-text-classification.git
 cd news-text-classification
 ```
 
@@ -258,10 +258,10 @@ This project was developed as part of a diploma thesis on **"Development of Soft
 
 ## 📞 Contact
 
-**Author**: [Your Name]  
-**Email**: your.email@example.com  
-**LinkedIn**: [Your LinkedIn Profile]  
-**Project Link**: https://github.com/yourusername/news-text-classification
+**Author**: Arthur Stoliarchuk 
+**Email**: arthurstoliarchuk@gmail.com
+**LinkedIn**: https://www.linkedin.com/in/arthurstoliarchuk/
+**Project Link**: https://github.com/ArthurStoliarchuk/News-Text-Classification-with-DISTILBERT
 
 ## 🙏 Acknowledgments
 
