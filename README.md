@@ -254,7 +254,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🎓 Academic Context
 
-This project was developed as part of a diploma thesis on **"Development of Software for Text Classification Using Deep Learning Methods"** at [University Name]. The research focuses on applying state-of-the-art transformer architectures to real-world text classification challenges.
+This project was developed as part of a diploma thesis on **"Development of Software for Text Classification Using Deep Learning Methods"** at Taras Shevchenko National University of Kyiv. The research focuses on applying state-of-the-art transformer architectures to real-world text classification challenges. The defense of this work was evaluated at 90 out of 100 points (excellent).
 
 ## 📞 Contact
 
