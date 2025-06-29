@@ -1,0 +1,111 @@
+<!-- web/templates/compare.html -->
+{% extends "base.html" %}
+
+{% block title %}Model Comparison{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="display-5 fw-bold text-primary mb-4">
+            <i class="fas fa-balance-scale me-3"></i>Model Comparison
+        </h1>
+        <p class="lead">Compare the performance of different machine learning models for news classification.</p>
+    </div>
+</div>
+
+{% if not model_exists %}
+<div class="alert alert-warning">
+    <h4><i class="fas fa-exclamation-triangle"></i> Comparison Not Available</h4>
+    <p>Please train the models first by running the comparison script.</p>
+</div>
+{% else %}
+<div class="row g-4">
+    <!-- Model Performance Comparison -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Accuracy Comparison</h5>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='model_comparison.png') }}" 
+                     class="img-fluid" alt="Model Comparison">
+            </div>
+        </div>
+    </div>
+    
+    <!-- F1 Score Comparison -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>F1 Score Comparison</h5>
+            </div>
+            <div class="card-body">
+                <img src="{{ url_for('static', filename='f1_comparison.png') }}" 
+                     class="img-fluid" alt="F1 Score Comparison">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model Details Table -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-table me-2"></i>Detailed Model Comparison</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Model</th>
+                                <th>Type</th>
+                                <th>Accuracy</th>
+                                <th>Training Time</th>
+                                <th>Parameters</th>
+                                <th>Advantages</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>DistilBERT</strong></td>
+                                <td><span class="badge bg-primary">Transformer</span></td>
+                                <td>92.3%</td>
+                                <td>~45 minutes</td>
+                                <td>66M</td>
+                                <td>Fast, efficient, good performance</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BERT</strong></td>
+                                <td><span class="badge bg-primary">Transformer</span></td>
+                                <td>94.1%</td>
+                                <td>~90 minutes</td>
+                                <td>110M</td>
+                                <td>Highest accuracy</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Naive Bayes</strong></td>
+                                <td><span class="badge bg-secondary">Traditional ML</span></td>
+                                <td>78.5%</td>
+                                <td>~2 minutes</td>
+                                <td>~5K</td>
+                                <td>Very fast training</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SVM</strong></td>
+                                <td><span class="badge bg-secondary">Traditional ML</span></td>
+                                <td>82.1%</td>
+                                <td>~8 minutes</td>
+                                <td>~10K</td>
+                                <td>Good baseline performance</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="display-5 fw-bold text-primary mb-4">
+            <i class="fas fa-newspaper me-3"></i>News Classification
+        </h1>
+        <p class="lead">Enter a news article to classify its category using our trained AI model.</p>
+    </div>
+</div>
+
+{% if not model_exists %}
+<div class="alert alert-warning">
+    <h4><i class="fas fa-exclamation-triangle"></i> Model Not Trained Yet</h4>
+    <p>The classification model hasn't been trained yet. Please run <code>python main.py</code> in the terminal first to train the model.</p>
+</div>
+{% else %}
+<div class="row mt-4">
+    <div class="col-lg-10 mx-auto">
+        <div class="card border-0 shadow-lg" style="margin-bottom: 2rem;">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="mb-0"><i class="fas fa-robot me-2"></i>Text Classification</h4>
+            </div>
+            <div class="card-body p-4">
+                <form id="predictionForm">
+                    <div class="mb-4">
+                        <label for="newsText" class="form-label fs-5">Enter news text:</label>
+                        <textarea class="form-control" id="newsText" rows="10" required style="font-size: 1.05rem;"></textarea>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg px-4" id="classifyBtn">
+                            <i class="fas fa-search me-2"></i>Classify Text
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-lg" onclick="loadSample()">
+                            <i class="fas fa-random me-2"></i>Load Sample
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-lg" onclick="clearText()">
+                            <i class="fas fa-eraser me-2"></i>Clear
+                        </button>
+                    </div>
+                </form>
+
+                <div class="result mt-5" id="result" style="display: none;">
+                    <h4 class="mb-3">Classification Result:</h4>
+                    <div id="prediction" class="fs-5"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project Overview Section -->
+<div class="mt-5 mb-4">
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold">Project Overview</h2>
+        <p class="card-text">A deep learning approach to news text classification</p>
+        <hr class="my-4 w-25 mx-auto">
+    </div>
+    
+    <!-- Technologies Section -->
+    <div class="card border-0 shadow-lg mb-5">
+        <div class="card-header bg-gradient-primary text-white py-3">
+            <h3 class="mb-0"><i class="fas fa-code me-2"></i>Technologies Used</h3>
+        </div>
+        <div class="card-body">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fab fa-python fa-4x text-primary mb-3"></i>
+                            <h4 class="card-title">Python Stack</h4>
+                            <p class="card-text">Built with Python 3.8+, Flask web framework, Pandas for data handling, and NumPy for numerical operations</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-brain fa-4x text-success mb-3"></i>
+                            <h4 class="card-title">Deep Learning</h4>
+                            <p class="card-text">Powered by PyTorch and Hugging Face Transformers with DistilBERT for efficient text classification</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-chart-bar fa-4x text-warning mb-3"></i>
+                            <h4 class="card-title">Data Visualization</h4>
+                            <p class="card-text">Interactive visualizations created with Matplotlib, Seaborn, and Chart.js for performance analysis</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Model Architecture -->
+    <div class="card border-0 shadow-lg mb-5">
+        <div class="card-header bg-gradient-success text-white py-3">
+            <h3 class="mb-0"><i class="fas fa-network-wired me-2"></i>Model Architecture</h3>
+        </div>
+        <div class="card-body pb-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h4 class="mb-3">DistilBERT Transformer</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i>Lighter and faster version of BERT with 40% fewer parameters</li>
+                        <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i>6 transformer layers with self-attention mechanisms</li>
+                        <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i>Pretrained on large corpus and fine-tuned on news data</li>
+                        <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i>Contextual word embeddings for superior text understanding</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card bg-gray p-3">
+                        <pre class="mb-0" style="font-size: 0.9rem;"><code>NewsClassifier(
+  (bert): DistilBertModel
+  (dropout): Dropout(p=0.3)
+  (classifier): 
+    Linear(in_features=768, 
+           out_features=5))</code></pre>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <div class="text-center">
+                            <h5 class="mb-0 text-primary">92%+</h5>
+                            <small class="text-muted">Accuracy</small>
+                        </div>
+                        <div class="text-center">
+                            <h5 class="mb-0 text-primary">~45 min</h5>
+                            <small class="text-muted">Training Time</small>
+                        </div>
+                        <div class="text-center">
+                            <h5 class="mb-0 text-primary">66M</h5>
+                            <small class="text-muted">Parameters</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dataset Information -->
+    <div class="card border-0 shadow-lg mb-5">
+        <div class="card-header bg-gradient-info text-white py-3">
+            <h3 class="mb-0"><i class="fas fa-database me-2"></i>Dataset & Processing</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>BBC News Dataset</h4>
+                    <p>The model was trained on the BBC News dataset, containing articles across 5 categories:</p>
+                    
+                    <div class="row row-cols-2 row-cols-md-3 g-3 mb-4">
+                        <div class="col">
+                            <div class="card bg-primary text-white text-center py-2">
+                                <div class="card-body p-1">
+                                    <i class="fas fa-chart-line mb-1"></i>
+                                    <p class="mb-0">Business</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-success text-white text-center py-2">
+                                <div class="card-body p-1">
+                                    <i class="fas fa-film mb-1"></i>
+                                    <p class="mb-0">Entertainment</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-warning text-dark text-center py-2">
+                                <div class="card-body p-1">
+                                    <i class="fas fa-landmark mb-1"></i>
+                                    <p class="mb-0">Politics</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-danger text-white text-center py-2">
+                                <div class="card-body p-1">
+                                    <i class="fas fa-futbol mb-1"></i>
+                                    <p class="mb-0">Sport</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card bg-info text-white text-center py-2">
+                                <div class="card-body p-1">
+                                    <i class="fas fa-microchip mb-1"></i>
+                                    <p class="mb-0">Technology</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h4>Data Processing Pipeline</h4>
+                    <div class="card border-0 shadow-sm bg-gray">
+                        <div class="card-body">
+                            <ol class="mb-0">
+                                <li class="mb-2">Text cleaning and preprocessing</li>
+                                <li class="mb-2">Tokenization using DistilBERT tokenizer</li>
+                                <li class="mb-2">Dataset splitting: 70% train, 15% validation, 15% test</li>
+                                <li class="mb-2">DataLoader batching with dynamic padding</li>
+                                <li>Text augmentation techniques for robustness</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <div class="d-flex justify-content-around">
+                            <div>
+                                <h5 class="mb-0">2,225+</h5>
+                                <small class="text-muted">Total Articles</small>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">80-20</h5>
+                                <small class="text-muted">Train-Test Split</small>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">512</h5>
+                                <small class="text-muted">Max Tokens</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Project Features -->
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-gradient-warning text-dark py-3">
+            <h3 class="mb-0"><i class="fas fa-star me-2"></i>Key Features</h3>
+        </div>
+        <div class="card-body">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-tachometer-alt fa-3x text-primary mb-3"></i>
+                            <h4>Real-Time Classification</h4>
+                            <p class="card-text">Instantly classify any news article with a single click</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-chart-pie fa-3x text-success mb-3"></i>
+                            <h4>Interactive Dashboard</h4>
+                            <p class="card-text">Comprehensive visualizations of model performance and dataset statistics</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-language fa-3x text-info mb-3"></i>
+                            <h4>Text Analysis</h4>
+                            <p class="card-text">Deep insights into text patterns, word frequencies, and distributions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm text-center">
+                        <div class="card-body">
+                            <i class="fas fa-code-branch fa-3x text-warning mb-3"></i>
+                            <h4>Model Comparison</h4>
+                            <p class="card-text">Compare performance across multiple ML architectures</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Add min-height to ensure the footer stays at bottom -->
+<div style="min-height: 100px"></div>
+{% endblock %}
+
+{% block scripts %}
+{% if model_exists %}
+<script>
+    // Sample news texts for demonstration
+    const sampleTexts = {
+        business: "The Federal Reserve announced a new interest rate policy today, affecting mortgage rates and business loans across the country. Financial markets responded positively to the news, with major indices showing significant gains.",
+        entertainment: "The highly anticipated movie sequel broke box office records this weekend, earning over $200 million globally. Critics praised the film's visual effects and storyline, calling it a worthy successor to the original.",
+        politics: "The Senate voted on the new healthcare bill yesterday, with senators debating key provisions late into the night. The legislation aims to expand coverage while reducing costs for American families.",
+        sport: "In an thrilling match yesterday, the home team secured victory with a spectacular goal in the final minutes. The stadium erupted as fans celebrated what many are calling the goal of the season.",
+        tech: "A major technology company unveiled its latest smartphone featuring advanced AI capabilities and improved battery life. The device includes cutting-edge camera technology and faster processing speeds."
+    };
+
+    function loadSample() {
+        const categories = Object.keys(sampleTexts);
+        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+        document.getElementById('newsText').value = sampleTexts[randomCategory];
+    }
+
+    function clearText() {
+        document.getElementById('newsText').value = '';
+        document.getElementById('result').style.display = 'none';
+    }
+
+    document.getElementById('predictionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const text = document.getElementById('newsText').value;
+        const classifyBtn = document.getElementById('classifyBtn');
+        
+        if (text.length < 10) {
+            alert('Please enter more text for better classification accuracy.');
+            return;
+        }
+        
+        // Show loading state
+        classifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Classifying...';
+        classifyBtn.disabled = true;
+        
+        fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'text': text
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('prediction').innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+            } else {
+                const categoryIcons = {
+                    'business': 'fas fa-chart-line',
+                    'entertainment': 'fas fa-film',
+                    'politics': 'fas fa-landmark',
+                    'sport': 'fas fa-futbol',
+                    'tech': 'fas fa-microchip'
+                };
+                
+                const categoryColors = {
+                    'business': 'primary',
+                    'entertainment': 'success', 
+                    'politics': 'warning',
+                    'sport': 'danger',
+                    'tech': 'info'
+                };
+                
+                const icon = categoryIcons[data.prediction.toLowerCase()] || 'fas fa-tag';
+                const confidence = data.confidence ? (data.confidence * 100).toFixed(1) : 'N/A';
+                const categoryColor = categoryColors[data.prediction.toLowerCase()] || 'secondary';
+                
+                document.getElementById('prediction').innerHTML = 
+                    `<div class="alert alert-success fs-5">
+                        <i class="${icon} me-2"></i>Category: <strong>${data.prediction.toUpperCase()}</strong>
+                        <span class="badge bg-${categoryColor} ms-2" style="vertical-align: top; margin-top: 2px;">${confidence}%</span>
+                    </div>`;
+            }
+            document.getElementById('result').style.display = 'block';
+            
+            // Reset button
+            classifyBtn.innerHTML = '<i class="fas fa-search me-1"></i>Classify Text';
+            classifyBtn.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('prediction').innerHTML = 
+                `<div class="alert alert-danger">Error occurred during classification.</div>`;
+            document.getElementById('result').style.display = 'block';
+            
+            // Reset button
+            classifyBtn.innerHTML = '<i class="fas fa-search me-1"></i>Classify Text';
+            classifyBtn.disabled = false;
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}
+

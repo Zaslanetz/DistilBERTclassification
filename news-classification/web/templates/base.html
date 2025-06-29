@@ -1,0 +1,422 @@
+<!-- web/templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}News Text Classification{% endblock %}</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Color variables */
+            --primary-color: #3b82f6;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            
+            /* Light theme (default) */
+            --bg-gradient: linear-gradient(135deg, #7F8CAA 0%, #333446 100%);
+            --text-color: #1e293b;
+            --card-bg: white;
+            --card-text: #1e293b;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --navbar-text: #1e293b;
+            --container-bg: white;
+            --input-border: #e2e8f0;
+            
+            /* Bootstrap variable overrides */
+            --bs-nav-link-padding-x: 10;
+        }
+        
+        body.dark-theme {
+            /* Dark theme */
+            --bg-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            --text-color: #f8fafc;
+            --card-bg: #1e293b;
+            --card-text: #f8fafc;
+            --navbar-bg: rgba(15, 23, 42, 0.95);
+            --navbar-text: #f8fafc;
+            --container-bg: #0f172a;
+            --input-border: #334155;
+        }
+        
+        /* Override Bootstrap navbar styles */
+        .navbar-nav {
+            --bs-nav-link-padding-x: 10;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding-top: 76px;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s ease;
+        }
+        
+        .navbar {
+            background: var(--navbar-bg) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+        }
+        
+        /* Add proper spacing for navbar items */
+        .navbar-nav .nav-item {
+            padding: 0 10px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--navbar-text) !important;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link.active {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+        
+        /* Make the main container take up remaining space */
+        .container-main {
+            background: var(--container-bg);
+            color: var(--text-color);
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            padding: 2rem;
+            max-width: 1200px;
+            flex: 1;
+            min-height: calc(100vh - 200px);
+            margin-bottom: 2rem;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        .hero-section {
+            padding: 3rem 0;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--primary-color), #6366f1) !important;
+        }
+        
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+        }
+        
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+        }
+        
+        .bg-gradient-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .card {
+            border-radius: 15px;
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--card-text);
+            border: none;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid var(--input-border);
+            transition: border-color 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        /* Ensure text area and inputs have proper dark mode colors */
+        .dark-theme .form-control {
+            background-color: #374151;
+            color: white;
+        }
+        
+        .dark-theme .form-control:focus {
+            background-color: #374151;
+        }
+        
+        /* Footer style adjustments */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto; /* Push to bottom */
+            width: 100%;
+        }
+        
+        /* Card header text color fixes for themes */
+        /* Light theme - black text on all card headers */
+        body:not(.dark-theme) .card-header h3,
+        body:not(.dark-theme) .card-header h4,
+        body:not(.dark-theme) .card-header i {
+            color: #1e293b !important;
+        }
+        
+        /* Dark theme - white text on all card headers */
+        body.dark-theme .card-header h3,
+        body.dark-theme .card-header h4,
+        body.dark-theme .card-header i {
+            color: white !important;
+        }
+        
+        /* Theme toggle switch */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        
+        .theme-switch {
+            display: inline-block;
+            height: 24px;
+            position: relative;
+            width: 50px;
+        }
+        
+        .theme-switch input {
+            display: none;
+        }
+        
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            background-color: white;
+            bottom: 4px;
+            content: "";
+            height: 16px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 16px;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .dark-mode-icon {
+            color: var(--navbar-text);
+            margin-right: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .container-main {
+                margin: 1rem;
+                padding: 1rem;
+                border-radius: 15px;
+            }
+            
+            .hero-section {
+                padding: 2rem 0;
+            }
+        }
+        
+        
+        body.dark-theme .card .text-muted {
+            color: rgba(255, 255, 255, 0.9) !important; 
+        }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-newspaper me-2"></i>News AI Classifier
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Classify
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-chart-bar me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/analysis">
+                            <i class="fas fa-search me-1"></i>Text Analysis
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/compare">
+                            <i class="fas fa-balance-scale me-1"></i>Model Comparison
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <div class="theme-switch-wrapper">
+                            <i class="fas fa-moon dark-mode-icon"></i>
+                            <label class="theme-switch">
+                                <input type="checkbox" id="theme-toggle">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container container-main">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h5 class="text-uppercase mb-3">Diploma Project</h5>
+                    <p class="mb-3">News Text Classification using Deep Learning with PyTorch</p>
+                    <p class="mb-2">Technologies Used:</p>
+                    <p class="mb-0">
+                        <span class="badge bg-primary me-1">PyTorch</span>
+                        <span class="badge bg-success me-1">DistilBERT</span>
+                        <span class="badge bg-info me-1">Flask</span>
+                        <span class="badge bg-warning text-dark">Bootstrap</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Active nav link script -->
+    <script>
+        // Highlight active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentLocation = location.pathname;
+            const menuItems = document.querySelectorAll('.nav-link');
+            
+            menuItems.forEach(item => {
+                if(item.getAttribute('href') === currentLocation){
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+    
+    <!-- Theme switcher script -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const darkModeIcon = document.querySelector('.dark-mode-icon');
+        
+        // Check for saved theme preference or use the system preference
+        function getPreferredTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                return savedTheme;
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        
+        // Apply the theme
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeToggle.checked = true;
+                darkModeIcon.classList.remove('fa-moon');
+                darkModeIcon.classList.add('fa-sun');
+            } else {
+                document.body.classList.remove('dark-theme');
+                themeToggle.checked = false;
+                darkModeIcon.classList.remove('fa-sun');
+                darkModeIcon.classList.add('fa-moon');
+            }
+        }
+        
+        // Set theme on initial load
+        const preferredTheme = getPreferredTheme();
+        applyTheme(preferredTheme);
+        
+        // Toggle theme when switch is clicked
+        themeToggle.addEventListener('change', function() {
+            const theme = this.checked ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
