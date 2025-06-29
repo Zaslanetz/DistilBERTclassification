@@ -49,8 +49,8 @@ This project implements a state-of-the-art news text classification system using
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/ArthurStoliarchuk/news-text-classification.git
-cd news-text-classification
+git clone [https://github.com/ArthurStoliarchuk/news-text-classification.git](https://github.com/ArthurStoliarchuk/News-Text-Classification-with-DISTILBERT.git)
+cd News-Text-Classification-with-DISTILBERT
 ```
 
 2. **Install dependencies**
