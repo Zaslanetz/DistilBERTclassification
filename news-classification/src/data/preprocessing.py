@@ -10,8 +10,8 @@ def clean_text(text):
         # Remove special characters and digits
         text = re.sub(r'[^\w\s]', '', text)
         text = re.sub(r'\d+', '', text)
-        # Convert to lowercase
-        text = text.lower().strip()
+        # Convert to lowercase not necessary since DistilBERT tokenizer does lowcase itself
+        #text = text.lower().strip()
         return text
     return ""
 
@@ -51,3 +51,46 @@ def load_bbc_news_dataset(data_path, test_size=0.2, val_size=0.1):
                                          stratify=train_df['category'], random_state=42)
     
     return train_df, val_df, test_df
+
+# For the new dataset News Category Dataset
+
+def load_news_category_dataset(json_path, test_size=0.2, val_size=0.1):
+    """
+    Load and preprocess the News Category dataset from a JSON file.
+    The dataset should have: category, headline, authors, link, short_description, date.
+    Returns train, validation, and test DataFrames.
+    """
+    print("Loading JSON file...")
+    # Load JSON lines file
+    df = pd.read_json(json_path, lines=True)
+
+    print("Checking required columns...")
+    # Check for required columns
+    required_columns = ['category', 'headline', 'authors', 'link', 'short_description', 'date']
+    if not all(col in df.columns for col in required_columns):
+        raise ValueError(f"Missing columns in dataset. Required: {required_columns}")
+
+    print("Cleaning and preprocessing text...")
+    # Combine headline and short_description for text input
+    df['text'] = (df['headline'].fillna('') + ' ' + df['short_description'].fillna('')).apply(clean_text)
+
+    # Remove rows with missing category or text
+    df = df.dropna(subset=['category', 'text'])
+    df = df[df['text'].str.strip() != '']
+
+    print("Splitting dataset into train, validation, and test sets...")
+    # Split data
+    train_df, test_df = train_test_split(df, test_size=test_size, stratify=df['category'], random_state=42)
+    train_df, val_df = train_test_split(train_df, test_size=val_size/(1-test_size), 
+                                         stratify=train_df['category'], random_state=42)
+
+    return train_df, val_df, test_df
+
+def visualize_first_rows(df, n=10):
+    """
+    Display the first n rows of the DataFrame, showing only 'category' and 'text' columns.
+    """
+    #print(df[['category', 'text']].head(n))
+    with pd.option_context('display.max_colwidth', 512):
+        print(df[['category', 'text']].head(n))
+
