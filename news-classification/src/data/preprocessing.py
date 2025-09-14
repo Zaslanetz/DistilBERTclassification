@@ -12,6 +12,8 @@ def clean_text(text):
         text = re.sub(r'\d+', '', text)
         # Convert to lowercase not necessary since DistilBERT tokenizer does lowcase itself
         #text = text.lower().strip()
+        text = re.sub(r'\t', '', text)
+        text = text.strip()
         return text
     return ""
 
@@ -91,6 +93,6 @@ def visualize_first_rows(df, n=10):
     Display the first n rows of the DataFrame, showing only 'category' and 'text' columns.
     """
     #print(df[['category', 'text']].head(n))
-    with pd.option_context('display.max_colwidth', 512):
+    with pd.option_context('display.max_colwidth', 130):
         print(df[['category', 'text']].head(n))
 

@@ -8,6 +8,15 @@ A comprehensive deep learning solution for automated news article classification
 [![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+## Changes
+
+1. New dataset: News Category Dataset
+2. New format of the dataset: json
+3. Preprocessing: added def load_news_category_dataset(json_path, test_size=0.2, val_size=0.1) to match with BBC Dataset approach
+4. Preprocessing: changed def clean_text(text) by removing lowercase since DistilBERT takes care of lower case in the tokenizer. No excessive cleaning up of the text is necessary.
+
+
+
 ## 📖 Overview
 
 This project implements a state-of-the-art news text classification system using deep learning techniques. The system automatically categorizes news articles into predefined categories using DistilBERT, a lightweight and efficient transformer model. The solution includes a complete machine learning pipeline from data preprocessing to model deployment with an interactive web interface.

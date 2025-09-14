@@ -1,6 +1,6 @@
 from src.data.preprocessing import load_news_category_dataset, visualize_first_rows, load_bbc_news_dataset
 
-def prepare_new_data(dataset='bbc_news'):
+def prepare_new_data(dataset='news_category'):
     
     """
     Load and preprocess the selected dataset.
