@@ -167,30 +167,32 @@ def main():
     
     print(f"Training completed! Final accuracy: {results['accuracy']:.3f}")
     
+    #disable since visualisation doesn´t work: 
+
     # Generate dataset statistics and visualizations
-    print("Generating dataset statistics and visualizations...")
+    #print("Generating dataset statistics and visualizations...")
     
     # Class distribution
-    class_distribution = train_df['category'].value_counts().to_dict()
-    with open('models/class_distribution.json', 'w') as f:
-        json.dump(class_distribution, f)
+    #class_distribution = train_df['category'].value_counts().to_dict()
+    #with open('models/class_distribution.json', 'w') as f:
+    #    json.dump(class_distribution, f)
         
     # Text length analysis
-    length_stats = analyze_text_length(train_df)
-    with open('models/length_stats.json', 'w') as f:
-        json.dump(length_stats, f)
+    #length_stats = analyze_text_length(train_df)
+    #with open('models/length_stats.json', 'w') as f:
+    #    json.dump(length_stats, f)
     
     # Generate wordclouds
-    generate_wordclouds(train_df)
+    #generate_wordclouds(train_df)
     
     # Get top words
-    top_words = get_top_words(train_df)
-    with open('models/top_words.json', 'w') as f:
-        json.dump(top_words, f)
+    #top_words = get_top_words(train_df)
+    #with open('models/top_words.json', 'w') as f:
+    #    json.dump(top_words, f)
     
     # После обучения создать графики с реальными данными
-    print("Creating training curves with real data...")
-    create_training_curves_from_history()
+    #print("Creating training curves with real data...")
+    #create_training_curves_from_history()
 
 if __name__ == "__main__":
     main()
